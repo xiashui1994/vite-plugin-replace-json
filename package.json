@@ -15,8 +15,8 @@
     "url": "https://gitee.com/xiashui/vite-plugin-replace-json.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "xiashui",
+  "license": "MIT",
   "devDependencies": {
     "@types/node": "^17.0.23",
     "ts-node": "^10.7.0",
