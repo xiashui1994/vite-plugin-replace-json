@@ -3,7 +3,7 @@
     "module": "commonjs",
     "target": "es5",
     "allowJs": false,
-    "declaration": false,
+    "declaration": true,
     "outDir": "dist",
     "rootDir": "src",
     "importHelpers": true,
@@ -26,6 +26,7 @@
     "resolveJsonModule": true
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "dist"
   ]
 }
