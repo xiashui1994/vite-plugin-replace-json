@@ -1,39 +1,144 @@
 # vite-plugin-replace-json
 
-#### 介绍
-{**以下是 Gitee 平台说明，您可以替换此简介**
-Gitee 是 OSCHINA 推出的基于 Git 的代码托管平台（同时支持 SVN）。专为开发者提供稳定、高效、安全的云端软件开发协作平台
-无论是个人、团队、或是企业，都能够用 Gitee 实现代码托管、项目管理、协作开发。企业项目请看 [https://gitee.com/enterprises](https://gitee.com/enterprises)}
+替换JSON文件内容的vite插件
+# 快速开始
+### 安装
+```bash
+# npm
+npm install vite-plugin-replace-json -D
+or
+# yarn
+yarn add vite-plugin-replace-json -D
+or
+#pnpm
+pnpm install vite-plugin-replace-json -D
+```
 
-#### 软件架构
-软件架构说明
+### 配置
+在vite配置文件中引入`vite-plugin-replace-json`，并在`plugins`中配置，建议放在`plugins`的第一个位置，以保证替换后的内容生效。
+```typescript
+// vite.config.js or vite.config.ts
 
+import { defineConfig } from "vite";
+import replaceJson from "vite-plugin-replace-json";
 
-#### 安装教程
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [replaceJson([{
+    path: "./src/config.json",
+    replace: {
+      name: '"vite-plugin-replace-json"'
+    }
+  }])]
+});
+```
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+### 使用
+`vite-plugin-replace-json`支持替换**多个JSON文件**内容，支持替换一个JSON文件中**多个字段**的值。
+```typescript
+// vite.config.js or vite.config.ts
 
-#### 使用说明
+import { defineConfig } from "vite";
+import replaceJson from "vite-plugin-replace-json";
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+// https://vitejs.dev/config/
+export default defineConfig({
 
-#### 参与贡献
+  // 替换多个JSON文件内容
+  plugins: [replaceJson([{
+    path: "./src/api.json",
+    replace: {
+      name: '"vite-plugin-replace-json"'
+    }
+  },{
+    path: "./src/config.json",
+    replace: {
+      name: '"vite-plugin-replace-json"'
+    }
+  }])]
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+  // 替换一个JSON文件中多个字段的值
+  plugins: [replaceJson([{
+    path: "./src/api.json",
+    replace: {
+      name: '"vite-plugin-replace-json"',
+      version: '"1.0.0"'
+    }
+  }])]
+});
+```
 
+`vite-plugin-replace-json`支持替换JSON文件中**深层嵌套**字段的值。（类似对象语法）
+```typescript
+// vite.config.js or vite.config.ts
 
-#### 特技
+import { defineConfig } from "vite";
+import replaceJson from "vite-plugin-replace-json";
 
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [replaceJson([{
+    path: "./src/config.json",
+    replace: {
+      'config.api.name': '"vite-plugin-replace-json"'
+    }
+  }])]
+});
+```
+
+`vite-plugin-replace-json`支持替换常用**数据类型**的值，支持替换字符串、数字、布尔值、数组、对象等。
+```typescript
+// vite.config.js or vite.config.ts
+
+import { defineConfig } from "vite";
+import replaceJson from "vite-plugin-replace-json";
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [replaceJson([{
+    path: "./src/config.json",
+    replace: {
+      // 替换字符串
+      name: '"vite-plugin-replace-json"'
+
+      // 替换数字
+      version: 1.0.0
+
+      // 替换布尔值
+      production: true
+
+      // 替换数组
+      list: '[1, 2, 3]'
+
+      // 替换对象
+      obj: '{"a": 1, "b": 2}'
+    }
+  }])]
+});
+```
+
+### uni-app cli vue3 项目中使用
+uni-app项目中的`manifest.json`文件是应用的配置文件，用于指定应用的名称、图标、权限等。但是不支持条件编译，在实际项目开发中往往会遇到以下问题：
+
+1.小程序开发者工具中打开项目后，可以看到项目名称开发版和正式版一致，因为项目名称是由`manifest.json`中的name决定的
+2.一份代码打包多个小程序，`manifest.json`中的appid不能动态修改
+
+`vite-plugin-replace-json`通过一些简单的配置，就可以解决这些问题:
+```typescript
+// vite.config.js or vite.config.ts
+
+import { defineConfig } from "vite";
+import uni from "@dcloudio/vite-plugin-uni";
+import replaceJson from "vite-plugin-replace-json";
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [replaceJson([{
+    path: "./src/manifest.json",
+    replace: {
+      name: 'vite-plugin-replace-json-开发版', // 仅示例，项目中可以根据开发环境动态替换
+      appid: 'xxxxxxxx' // 仅示例，项目中可以可以使用自定义编译平台动态配置
+    }
+  }]), uni()]
+});
+```
